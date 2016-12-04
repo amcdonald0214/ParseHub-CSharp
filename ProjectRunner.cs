@@ -69,7 +69,7 @@ namespace ParseHub.Client
                 request.AddParameter("start_template", HttpUtility.UrlEncode(startTemplate));
 
             if (!string.IsNullOrEmpty(startValueOverride))
-                request.AddParameter("start_value_override", HttpUtility.UrlEncode(startValueOverride));
+                request.AddParameter("start_value_override", startValueOverride);
 
             if (sendEmail)
                 request.AddParameter("send_email", 1);
@@ -91,8 +91,11 @@ namespace ParseHub.Client
 
             IRestResponse response = client.Execute(request);
             Run run = JsonConvert.DeserializeObject<Run>(response.Content);
-            if (run.Status.ToLower().Equals("complete"))
-                run.Data = GetRunData(runToken);
+            if (run != null)
+            {
+                if (run.Status.ToLower().Equals("complete"))
+                    run.Data = GetRunData(runToken);
+            }
 
             return run;
         }
