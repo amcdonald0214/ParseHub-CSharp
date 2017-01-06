@@ -1,0 +1,14 @@
+bin/Debug/Newtonsoft.Json.dll
+bin/Debug/Newtonsoft.Json.xml
+bin/Debug/ParseHub.Client.dll
+bin/Debug/ParseHub.Client.pdb
+bin/Debug/RestSharp.dll
+bin/Debug/RestSharp.xml
+obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+obj/Debug/ParseHub.Client.csproj.FileListAbsolute.txt
+obj/Debug/ParseHub.Client.csprojResolveAssemblyReference.cache
+obj/Debug/ParseHub.Client.dll
+obj/Debug/ParseHub.Client.pdb
+obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs

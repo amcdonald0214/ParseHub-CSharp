@@ -28,13 +28,19 @@ namespace ParseHub.Client
         public List<Project> GetAllProjects()
         {
             var client = new RestClient(ApiUrl);
-
             var request = new RestRequest("projects", Method.GET);
             request.AddParameter("api_key", ApiKey);
 
+            List<Project> projects = null;
+
             IRestResponse response = client.Execute(request);
-            JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(response.Content);
-            List<Project> projects = JsonConvert.DeserializeObject<List<Project>>(jsonResponse["projects"].ToString());
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(response.Content);
+                projects = JsonConvert.DeserializeObject<List<Project>>(jsonResponse["projects"].ToString());
+            }
+            else
+                throw new Exception("Expected response status code OK, received response status code " + response.StatusCode);
 
             return projects;
         }
@@ -42,20 +48,25 @@ namespace ParseHub.Client
         public Project GetProject(string projectToken)
         {
             var client = new RestClient(ApiUrl);
-
             var request = new RestRequest("projects/{token}", Method.GET);
             request.AddParameter("api_key", ApiKey);
             request.AddUrlSegment("token", projectToken);
 
+            Project project = null;
+
             IRestResponse response = client.Execute(request);
-            Project project = JsonConvert.DeserializeObject<Project>(response.Content);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                project = JsonConvert.DeserializeObject<Project>(response.Content);
+            }
+            else
+                throw new Exception("Expected response status code OK, received response status code " + response.StatusCode);
 
             return project;
         }
 
         public Run RunProject(string projectToken, string startUrl = null, string startTemplate = null, string startValueOverride = null, bool sendEmail = false)
         {
-            Run run = null;
             var client = new RestClient(ApiUrl);
 
             var request = new RestRequest("projects/{token}/run", Method.POST);
@@ -74,9 +85,13 @@ namespace ParseHub.Client
             if (sendEmail)
                 request.AddParameter("send_email", 1);
 
+            Run run = null;
+
             IRestResponse response = client.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 run = JsonConvert.DeserializeObject<Run>(response.Content);
+            else
+                throw new Exception("Expected response status code OK, received response status code " + response.StatusCode);
 
             return run;
         }
@@ -89,13 +104,22 @@ namespace ParseHub.Client
             request.AddParameter("api_key", ApiKey);
             request.AddUrlSegment("token", runToken);
 
+            Run run = null;
+
             IRestResponse response = client.Execute(request);
-            Run run = JsonConvert.DeserializeObject<Run>(response.Content);
-            if (run != null)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                if (run.Status.ToLower().Equals("complete"))
-                    run.Data = GetRunData(runToken);
+                run = JsonConvert.DeserializeObject<Run>(response.Content);
+                if (run != null && run.Status != null)
+                {
+                    if (run.Status.ToLower().Equals("complete"))
+                        run.Data = GetRunData(runToken);
+                }
+                else
+                    throw new Exception("Response was OK, but ParseHub Run or Run Status is null");
             }
+            else
+                throw new Exception("Expected response status code OK, received response status code " + response.StatusCode);
 
             return run;
         }
@@ -107,9 +131,15 @@ namespace ParseHub.Client
             var request = new RestRequest("runs/{token}/data", Method.GET);
             request.AddParameter("api_key", ApiKey);
             request.AddUrlSegment("token", runToken);
+            string runData = String.Empty;
 
             IRestResponse response = client.Execute(request);
-            return response.Content;
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                runData = response.Content;
+            else
+                throw new Exception("Expected response status code OK, received response status code " + response.StatusCode);
+
+            return runData;
         }
     }
 }
