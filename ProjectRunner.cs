@@ -74,10 +74,10 @@ namespace ParseHub.Client
             request.AddUrlSegment("token", projectToken);
 
             if (!string.IsNullOrEmpty(startUrl))
-                request.AddParameter("start_url", HttpUtility.UrlEncode(startUrl));
+                request.AddParameter("start_url", startUrl);
 
             if (!string.IsNullOrEmpty(startTemplate))
-                request.AddParameter("start_template", HttpUtility.UrlEncode(startTemplate));
+                request.AddParameter("start_template", startTemplate);
 
             if (!string.IsNullOrEmpty(startValueOverride))
                 request.AddParameter("start_value_override", startValueOverride);
@@ -119,7 +119,7 @@ namespace ParseHub.Client
                     throw new Exception("Response was OK, but ParseHub Run or Run Status is null");
             }
             else
-                throw new Exception("Expected response status code OK, received response status code " + response.StatusCode);
+                throw new Exception("Expected response status code OK, received response status code " + response.StatusCode + ". Error Message: " + response.ErrorMessage);
 
             return run;
         }
